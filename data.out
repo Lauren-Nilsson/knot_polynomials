@@ -1,0 +1,10 @@
+This file contains all of the alexander polynomials for each smoothing. To get the Jones polynomial take the sum of these and multiply by -(A^3)^3(-A^2-A^-2)^-1
+
+A^(3)*(-A^2-A^(-2))^3
+A^(1)*(-A^2-A^(-2))^2
+A^(1)*(-A^2-A^(-2))^2
+A^(-1)*(-A^2-A^(-2))^1
+A^(1)*(-A^2-A^(-2))^2
+A^(-1)*(-A^2-A^(-2))^1
+A^(-1)*(-A^2-A^(-2))^1
+A^(-3)*(-A^2-A^(-2))^2

@@ -1,0 +1,420 @@
+#include <iostream>
+#include <vector>
+
+#include "segment.h"
+#include "crossing.h"
+#include "knot.h"
+#include "loop.h"
+#include <fstream>
+#include <iostream>
+#include <iomanip>
+#include <cmath>
+
+using namespace std;
+
+int main() {
+    //{{0,8,1,7},{4,2,5,1},{2,9,3,10},{8,3,9,4},{10,6,11,5},{6,0,7,11}};
+    
+//{{17,3,0,2},{0,13,1,14},{12,7,13,8},{11,9,12,8},{10,6,11,5},{4,15,5,16},{16,3,17,4},{14,1,15,2},{6,9,7,10}};
+    //{{0,0,1,9},{2,2,3,1},{6,3,7,4},{7,5,8,4},{5,9,6,8}};
+	
+				//Opening the inputfile
+	ifstream data_in;
+	data_in.open("user_input.in");
+	if (!data_in) {		//check to make sure file is there and 
+can be opened
+		cerr << "Error! File could not be opened. Check 
+directory and/or filename. Input file should be named 'user_input.in' 
+see EXAMPLES.in for help.";
+		exit(1);
+	}	
+	string dummy;									
+//dummy vector
+	int count, thing;										
+//used to hold the number of crossings
+	data_in >> dummy >> dummy >> dummy >> count;	//read in input 
+data
+	cout << "The knot has " << count << " crossings." << endl;
+	vector<vector<int> > userinput(count, vector<int>(4));
+	userinput.reserve(count);
+	cout << "You have entered the following PD notation:" << endl;
+	for (int i = 0; i < count; i++){
+		for (int j = 0; j < 4; j++) {
+		data_in >> userinput[i][j];
+		cout << userinput[i][j] << "  ";
+		}
+		cout << endl;
+	}
+    //vector<vector<int> > userinput = 
+{{0,8,1,7},{4,2,5,1},{2,9,3,10},{8,3,9,4},{10,6,11,5},{6,0,7,11}};
+    int numsegs = userinput.size() * 2;
+   
+//    int k = 0;
+
+    vector<SEGMENT> mysegment;                          //creating 
+objects to hold loop information
+    vector<CROSS> mycross;
+    vector<KNOT> myknot;
+    vector<LOOP> myloop;
+
+    for (int i = 0; i < numsegs; i++) {
+        mysegment.push_back(SEGMENT());                 //setting up 
+segments from user input
+        mysegment[i].id = i;
+       // mysegment[i].looped = false;
+        //mysegment[i].aftcross=0;
+    }
+
+    for (int i = 0; i < userinput.size(); i++) {
+        mycross.push_back(CROSS());                     //setting up 
+segments and crossings from user input
+        mycross[i].id = i;
+        for (int j = 0; j < userinput[i].size(); j++) {
+            mysegment[userinput[i][j]].itsC.push_back(&mycross[i]);
+            mycross[i].itsS.push_back(&mysegment[userinput[i][j]]);
+        }
+    }
+
+    cout << endl << endl << endl;
+    if (mysegment.size() * 0.5 != mycross.size()) {                 
+//check to see if PD notation is for a knot or an arc
+        cout << "You have entered a PD notation for an arc." << endl;
+        cout << "Analysis is not currently supported for arcs. Sorry :(" 
+<< endl;
+        //goto arcanalysis;
+    } else cout << "You have entered the PD notation for a closed knot." 
+<< endl;
+	
+	
+	int numLp = 0;
+    int numLm = 0;
+    for (int i = 0; i < mycross.size(); i++) {
+        if (mycross[i].itsS[1]->id > mycross[i].itsS[3]->id) {
+            if (mycross[i].itsS[1]->id == (mysegment.size() - 1) && 
+mycross[i].itsS[3]->id == 0) {
+                mycross[i].Lpm = 1;
+                numLm += 1;
+            } else {
+                mycross[i].Lpm = 0;
+                numLp += 1;
+            }
+        }
+        if (mycross[i].itsS[1]->id < mycross[i].itsS[3]->id) {
+            if (mycross[i].itsS[3]->id == (mysegment.size() - 1) && 
+mycross[i].itsS[1]->id == 0) {
+                mycross[i].Lpm = 0;
+                numLp += 1;
+            } else {
+                mycross[i].Lpm = 1;
+                numLm += 1;
+            }
+        }
+    }
+	
+	
+	cout << endl << endl << "There are " << numLp << " L+ crossings 
+and " << numLm << " L- crossings." << endl;
+    for (int i = 0; i < mycross.size(); i++) {
+        cout << "Crossing " << i << " has ";
+        if (mycross[i].Lpm == 0) {
+            cout << "L+";
+        } else cout << "L-";
+        cout << " orientation." << endl;
+    }
+	
+	
+	
+	int max_count = pow(2,(mycross.size()));
+	vector<SEGMENT *> old ;
+	for (int i = 0; i < 4; i++)
+ {
+	 old.push_back(&mysegment[i]);
+}
+	
+	for(int count = 0; count < max_count; count++)
+{
+   // In the following loop we just basically print 'count' bit after 
+bit.
+
+   for(int offset = mycross.size()-1; offset >= 0; offset--) 
+   {
+      std::cout << ((count & (1 << offset)) >> offset);
+	  if (mycross[offset].Lpm == ((count & (1 << offset)) >> offset) 
+){
+		  mycross[offset].Lpm = ((count & (1 << offset)) >> 
+offset);
+	} else if (mycross[offset].Lpm != ((count & (1 << offset)) >> 
+offset) && mycross[offset].Lpm == 0) {
+ 		//cout << endl << "crossing number " << offset << " was 
+L+: "<< mycross[offset].itsS[0]->id << "  " << 
+mycross[offset].itsS[1]->id << "  " << mycross[offset].itsS[2]->id << "  
+" << mycross[offset].itsS[3]->id << "  " << endl;
+//  		old[3] = mycross[offset].itsS[3];	//rearranges the 
+crossing to be L- from L+
+// 		old[0] = mycross[offset].itsS[0];
+//  		old[1] = mycross[offset].itsS[1];
+// 		old[2] = mycross[offset].itsS[2];
+//  		
+//  		mycross[offset].itsS[0] = old[3];
+//  		mycross[offset].itsS[1] = old[0];
+//  		mycross[offset].itsS[2] = old[1];
+//  		mycross[offset].itsS[3] = old[2];
+ 		//cout << endl << "crossing number " << offset << " is 
+now L-: "<< mycross[offset].itsS[0]->id << "  " << 
+mycross[offset].itsS[1]->id << "  " << mycross[offset].itsS[2]->id << "  
+" << mycross[offset].itsS[3]->id << "  " << endl;
+		
+		mycross[offset].Lpm = 1;
+		
+	} else if (mycross[offset].Lpm != ((count & (1 << offset)) >> 
+offset) && mycross[offset].Lpm == 1) {
+ 		//cout << endl << "crossing number " << offset << " was 
+L-: "<< mycross[offset].itsS[0]->id << "  " << 
+mycross[offset].itsS[1]->id << "  " << mycross[offset].itsS[2]->id << "  
+" << mycross[offset].itsS[3]->id << "  " << endl;
+//  		old[3] = mycross[offset].itsS[3];	//rearranges the 
+crossing to be L+ from L-
+//  		old[0] = mycross[offset].itsS[0];
+//  		old[1] = mycross[offset].itsS[1];
+//  		old[2] = mycross[offset].itsS[2];
+//  		
+//  		mycross[offset].itsS[0] = old[1];
+//  		mycross[offset].itsS[1] = old[2];
+//  		mycross[offset].itsS[2] = old[3];
+//  		mycross[offset].itsS[3] = old[0];
+ 		//cout << endl << "crossing number " << offset << " is 
+now L+: "<< mycross[offset].itsS[0]->id << "  " << 
+mycross[offset].itsS[1]->id << "  " << mycross[offset].itsS[2]->id << "  
+" << mycross[offset].itsS[3]->id << "  " << endl;
+		
+		mycross[offset].Lpm = 0;
+	}
+	  
+   } //end offset forlooop
+
+   //blanking out loops and structures for a new run
+	for (int i = 0; i < numsegs; i++) {
+		mysegment[i].looped = false;
+    }
+     int numlps = 0;
+    myloop.erase(myloop.begin(),myloop.end()); 
+	
+	cout << endl;
+//  	for (int i = 0; i < mycross.size(); i++) {
+// 		for (int j = 0; j < 4; j++){
+//  			cout << mycross[i].itsS[j]->id << "  " ;
+// 		}
+// 		cout << endl;
+// 	}
+	
+	for (int i = 0; i < mycross.size(); i++) {               
+//identifying the knot at the aft end of each segment
+        mysegment[mycross[i].itsS[0]->id].aftcross = mycross[i].id;
+        if (mycross[i].itsS[1]->id > mycross[i].itsS[3]->id) {
+            if (mycross[i].itsS[1]->id == (mysegment.size() - 1) && 
+mycross[i].itsS[3]->id == 0) {
+                mysegment[mycross[i].itsS[1]->id].aftcross = 
+mycross[i].id;     //if its the 0/last crossing...
+            } else mysegment[mycross[i].itsS[3]->id].aftcross = 
+mycross[i].id;
+        } else if (mycross[i].itsS[1]->id < mycross[i].itsS[3]->id) {
+            if (mycross[i].itsS[3]->id == (mysegment.size() - 1) && 
+mycross[i].itsS[1]->id == 0) {
+                mysegment[mycross[i].itsS[3]->id].aftcross = 
+mycross[i].id;     //if its the 0/last crossing...
+            } else mysegment[mycross[i].itsS[1]->id].aftcross = 
+mycross[i].id;
+        }
+        
+        
+        
+        if (mycross[i].itsS[0]->id == mycross[i].itsS[1]->id) {  //Look 
+for loopty loops
+            mysegment[mycross[i].itsS[0]->id].looped = true;
+            myloop.push_back(LOOP());
+            myloop[numlps].id = numlps;
+            
+myloop[numlps].itsS.push_back(&mysegment[mycross[i].itsS[0]->id]);
+            numlps += 1;
+        }
+        if (mycross[i].itsS[1]->id == mycross[i].itsS[2]->id) {  //Look 
+for loopty loops
+            mysegment[mycross[i].itsS[1]->id].looped = true;
+            myloop.push_back(LOOP());
+            myloop[numlps].id = numlps;
+            
+myloop[numlps].itsS.push_back(&mysegment[mycross[i].itsS[1]->id]);
+            numlps += 1;
+        }
+        if (mycross[i].itsS[2]->id == mycross[i].itsS[3]->id) {  //Look 
+for loopty loops
+            mysegment[mycross[i].itsS[0]->id].looped = true;
+            myloop.push_back(LOOP());
+            myloop[numlps].id = numlps;
+            
+myloop[numlps].itsS.push_back(&mysegment[mycross[i].itsS[1]->id]);
+            numlps += 1;
+        }
+        if (mycross[i].itsS[0]->id == mycross[i].itsS[3]->id) {  //Look 
+for loopty loops
+            mysegment[mycross[i].itsS[0]->id].looped = true;
+            myloop.push_back(LOOP());
+            myloop[numlps].id = numlps;
+            
+myloop[numlps].itsS.push_back(&mysegment[mycross[i].itsS[1]->id]);
+            numlps += 1;
+        }
+    }
+    
+ 
+
+//
+    for (int i = 0; i < mysegment.size(); i++) {
+
+        int oldsize = 0;
+        if (mysegment[i].looped == false) {
+            myloop.push_back(LOOP());                   //create a new 
+loop
+            myloop[numlps].id = numlps;
+            mysegment[i].looped = true;                   //put the 
+segment in the new loop
+            myloop[numlps].itsS.push_back(&mysegment[i]);
+
+            while (oldsize < myloop[numlps].itsS.size()) { //check for 
+new loop segments
+                oldsize = myloop[numlps].itsS.size();
+                SEGMENT *sta;                               //segment to 
+add
+                int thiscross = myloop[numlps].itsS.back()->aftcross;   
+//start at aft crossing of the last segment
+                int thisseg = myloop[numlps].itsS.back()->id;
+                if (mycross[thiscross].itsS[0]->id == thisseg ||
+                    mycross[thiscross].itsS[2]->id == thisseg) {    
+//new segment at the crossing
+                    if (mycross[thiscross].itsS[1]->id < 
+mycross[thiscross].itsS[3]->id) {
+                        if (mycross[thiscross].itsS[1]->id == 0 &&
+                            mycross[thiscross].itsS[3]->id == 
+(mysegment.size() - 1)) {
+                            sta = mycross[thiscross].itsS[1];                       
+// for 0/last crossing...
+                        } else sta = mycross[thiscross].itsS[3];
+                    }
+                    if (mycross[thiscross].itsS[1]->id > 
+mycross[thiscross].itsS[3]->id) {
+                        if (mycross[thiscross].itsS[3]->id == 0 &&
+                            mycross[thiscross].itsS[1]->id == 
+(mysegment.size() - 1)) {
+                            sta = mycross[thiscross].itsS[3];
+                        } else sta = mycross[thiscross].itsS[1];
+                    }
+                } else if (mycross[thiscross].itsS[1]->id == thisseg || 
+mycross[thiscross].itsS[3]->id == thisseg) {
+                    if (mycross[thiscross].itsS[0]->id < 
+mycross[thiscross].itsS[2]->id) {
+                        if (mycross[thiscross].itsS[0]->id == 0 &&
+                            mycross[thiscross].itsS[2]->id == 
+(mysegment.size() - 1)) {
+                            sta = mycross[thiscross].itsS[0];
+                        } else sta = mycross[thiscross].itsS[2];
+                    }
+                    if (mycross[thiscross].itsS[0]->id > 
+mycross[thiscross].itsS[2]->id) {
+                        if (mycross[thiscross].itsS[2]->id == 0 &&
+                            mycross[thiscross].itsS[0]->id == 
+(mysegment.size() - 1)) {
+                            sta = mycross[thiscross].itsS[2];
+                        } else sta = mycross[thiscross].itsS[0];
+                    }
+                }
+
+                if (sta->id == mysegment[i].id) goto breakpoint;    
+//end of the loop?
+                myloop[numlps].itsS.push_back(sta);                 
+//add segment to the loop
+                sta->looped = true;
+            }
+            //exit loop if you get back to the first segment
+            breakpoint:;
+
+            numlps += 1;
+        }
+    }
+    
+     cout << "This knot has " << mysegment.size() << " segments, " << 
+mycross.size() << " crossings and "
+         << myloop.size() << " loops." << endl;
+    for (int i = 0; i < myloop.size(); i++) {
+        cout << "Loop " << i << " has segments: ";
+        for (int j = 0; j < myloop[i].itsS.size(); j++) {
+            cout << myloop[i].itsS[j]->id << "  ";
+        }
+        cout << endl;
+    }
+	
+   std::cout << std::endl;
+} //end count for loop
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+    
+    //Determine L+ (0) and L- (1)
+//     int numLp = 0;
+//     int numLm = 0;
+//     for (int i = 0; i < mycross.size(); i++) {
+//         if (mycross[i].itsS[1]->id > mycross[i].itsS[3]->id) {
+//             if (mycross[i].itsS[1]->id == (mysegment.size() - 1) && 
+mycross[i].itsS[3]->id == 0) {
+//                 mycross[i].Lpm = 1;
+//                 numLm += 1;
+//             } else {
+//                 mycross[i].Lpm = 0;
+//                 numLp += 1;
+//             }
+//         }
+//         if (mycross[i].itsS[1]->id < mycross[i].itsS[3]->id) {
+//             if (mycross[i].itsS[3]->id == (mysegment.size() - 1) && 
+mycross[i].itsS[1]->id == 0) {
+//                 mycross[i].Lpm = 0;
+//                 numLp += 1;
+//             } else {
+//                 mycross[i].Lpm = 1;
+//                 numLm += 1;
+//             }
+//         }
+//     }
+
+   // int W = numLp - numLm;                                              
+// Determine W(L) from Jones Polynomial
+
+   
+//     cout << endl << endl << "There are " << numLp << " L+ crossings 
+and " << numLm << " L- crossings." << endl;
+//     for (int i = 0; i < mycross.size(); i++) {
+//         cout << "Crossing " << i << " has ";
+//         if (mycross[i].Lpm == 0) {
+//             cout << "L+";
+//         } else cout << "L-";
+//         cout << " orientation." << endl;
+//     }
+   // cout << endl << endl << "W(L) = " << W << endl;
+	
+	//cout << "Now calculating all possible L+ / L- combinations..." 
+<< endl;
+	
+	
+	
+   
+
+    arcanalysis: ;
+
+    cout << endl << "Done!" << endl;
+}
+

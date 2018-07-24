@@ -1,0 +1,60 @@
+The knot has 3 crossings.
+You have entered the following PD notation:
+0  4  1  3  
+4  2  5  1  
+2  0  3  5  
+
+
+
+You have entered the PD notation for a closed knot.
+
+
+There are 3 L+ crossings and 0 L- crossings.
+Crossing 0 has L+ orientation.
+Crossing 1 has L+ orientation.
+Crossing 2 has L+ orientation.
+
+
+The knot has a writhe of 3
+
+Smoothing A )( is represented by 0. Smoothing A^-1 is represented by 1.
+
+
+Smoothing: 000
+This smoothing has 3 loops.
+Loop 0 has segments: 3  0  
+Loop 1 has segments: 4  1  
+Loop 2 has segments: 2  5  
+
+Smoothing: 001
+This smoothing has 2 loops.
+Loop 0 has segments: 3  1  4  0  
+Loop 1 has segments: 2  5  
+
+Smoothing: 010
+This smoothing has 2 loops.
+Loop 0 has segments: 3  0  
+Loop 1 has segments: 4  1  5  2  
+
+Smoothing: 011
+This smoothing has 1 loops.
+Loop 0 has segments: 3  1  5  2  4  0  
+
+Smoothing: 100
+This smoothing has 2 loops.
+Loop 0 has segments: 3  0  2  5  
+Loop 1 has segments: 4  1  
+
+Smoothing: 101
+This smoothing has 1 loops.
+Loop 0 has segments: 3  1  4  0  2  5  
+
+Smoothing: 110
+This smoothing has 1 loops.
+Loop 0 has segments: 3  0  2  4  1  5  
+
+Smoothing: 111
+This smoothing has 2 loops.
+Loop 0 has segments: 3  1  5  
+Loop 1 has segments: 4  0  2  
+
