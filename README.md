@@ -1,15 +1,18 @@
-INPUT FILE NAME: user_input.in
+## INPUT FILE NAME: 
+user_input.in
 
-INPUT DESCRIPTION: 
+## INPUT DESCRIPTION: 
 You will need to enter the number of crossings (n) the knot has, followed by the PD notation (with numbers separted by at least one space). Only spaces or tabs may be used as the delimiter. The last crossing entered MUST be the crossing between the first and last segment (0 and n). Only analysis for real knots is supported at this time (no virtual knots or arcs). 
 
 An example of what your input file should look like is below (in-between the "/" marks). Notice that this knot has 6 crossings and 12 segments that have been labelled 0-11. 
 
-OUTPUT FILE NAMES: comment_stream.out, data.out
-OUTPUT DESCRIPTION: data.out contains the necessary information to compute Jones polynomials. The summation of the terms in this file is the Jones polynomial. The data can be exported to Mathematica for this purpose.
+## OUTPUT FILE NAMES: 
+comment_stream.out, data.out
+## OUTPUT DESCRIPTION: 
+data.out contains the necessary information to compute Jones polynomials. The summation of the terms in this file is the Jones polynomial. The data can be exported to Mathematica for this purpose.
 comment_stream.out is a verbose file containing additional information about the knot. The initial configuration is repeated back to the user (in order to confirm that the user_input.in file was inputted correctly) along with analysis information. Loop structures for every smoothing are explicitely listed.
 
-RUNNING THE PROGRAM:
+## RUNNING THE PROGRAM:
 1) Make sure all the necessary files are stored in the same location. The following files are necessary to run this program:
 crossing.h
 knot.h
@@ -35,7 +38,7 @@ g++ -g -Wall -o simulate_topology main.o   -lgsl -lgslcblas
 ** The program has not been set up to take input for intertwined but unconnected knots. For example, the following knot would not work--
 1 1* 0 0* | 1* 1 0* 0
 
-PROGAMMER'S OTHER NOTES:
+## PROGAMMER'S OTHER NOTES:
 This program was written as a topology final project. There is much room for it to grow. I have purposely left it open so that other students (either graduate / undergraduate researchers) may make modifications. Below are some edits I think would be useful, organized from simplest to most difficult to implement.
 1) Add a function to determine which knot is between the first and last segments and put a flag on it. This would not restrict the user to identifying this crossing in advance.
 2) Allow multiple, intertwined, unconnected loops. (This has not been tested, but may work with current implementation)
@@ -43,19 +46,18 @@ This program was written as a topology final project. There is much room for it 
 4) Add arc analysis. Determine how to generate Jones Polynomial for this case
 5) Link this program to Mathematica with a script / mexing function to automatically generate the Jones Polynomial summation.
 
+```
+Number of crossings: 6
 
-/////////////////////////////////////////////////////
-> Number of crossings: 6
+0 	8 	1 	7
+4	2	5	1
+2	9	3	10
+8	3	9	4
+10	6	11	5
+6	0	7	11
+```
 
-> 0 	8 	1 	7
-> 4	2	5	1
-> 2	9	3	10
-> 8	3	9	4
-> 10	6	11	5
-> 6	0	7	11
-////////////////////////////////////////////////////
-
-////////////////////////////////////////////////////
+```
 Number of crossings: 9
 
 0	13	1	14
@@ -67,8 +69,9 @@ Number of crossings: 9
 14	1	15	2
 6	9	7	10
 17	3	0	2
-////////////////////////////////////////////////////
+```
 
+```
 Number of crossings: 19
 
 33	36	34	37
@@ -90,7 +93,7 @@ Number of crossings: 19
 7	11	8	10
 9	7	10	6
 37	1	0	0
-
+```
 
 	
 
