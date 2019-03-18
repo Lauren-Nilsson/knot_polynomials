@@ -1,10 +1,12 @@
+# README
+
 ## INPUT FILE NAME: 
 user_input.in
 
 ## INPUT DESCRIPTION: 
 You will need to enter the number of crossings (n) the knot has, followed by the PD notation (with numbers separted by at least one space). Only spaces or tabs may be used as the delimiter. The last crossing entered MUST be the crossing between the first and last segment (0 and n). Only analysis for real knots is supported at this time (no virtual knots or arcs). 
 
-An example of what your input file should look like is below (in-between the "/" marks). Notice that this knot has 6 crossings and 12 segments that have been labelled 0-11. 
+Examples of what your input file should look like are below in the EXAMPLES section.
 
 ## OUTPUT FILE NAMES: 
 comment_stream.out, data.out
@@ -46,6 +48,7 @@ This program was written as a topology final project. There is much room for it 
 4) Add arc analysis. Determine how to generate Jones Polynomial for this case
 5) Link this program to Mathematica with a script / mexing function to automatically generate the Jones Polynomial summation.
 
+## EXAMPLES:
 ```
 Number of crossings: 6
 
