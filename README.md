@@ -45,7 +45,7 @@ This program was written as a topology final project. There is much room for it 
 
 
 /////////////////////////////////////////////////////
-Number of crossings: 6
+> Number of crossings: 6
 
 0 	8 	1 	7
 4	2	5	1
