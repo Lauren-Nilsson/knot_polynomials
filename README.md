@@ -3,7 +3,7 @@ INPUT FILE NAME: user_input.in
 INPUT DESCRIPTION: 
 You will need to enter the number of crossings (n) the knot has, followed by the PD notation (with numbers separted by at least one space). Only spaces or tabs may be used as the delimiter. The last crossing entered MUST be the crossing between the first and last segment (0 and n). Only analysis for real knots is supported at this time (no virtual knots or arcs). 
 
-An example of what your input file should look like is below (in-between the "/" marks). Notice that this knot has 6 crossings and 12 segments that have been labelled 0-11. The segments should be labelled in this way, NOT 1-12. The last line contains the crossing with both segment 0 and segment 11. It is absolutely necessary for the final crossing on the list to be the one between the first and last segment.
+An example of what your input file should look like is below (in-between the "/" marks). Notice that this knot has 6 crossings and 12 segments that have been labelled 0-11. 
 
 OUTPUT FILE NAMES: comment_stream.out, data.out
 OUTPUT DESCRIPTION: data.out contains the necessary information to compute Jones polynomials. The summation of the terms in this file is the Jones polynomial. The data can be exported to Mathematica for this purpose.
@@ -36,13 +36,12 @@ g++ -g -Wall -o simulate_topology main.o   -lgsl -lgslcblas
 1 1* 0 0* | 1* 1 0* 0
 
 PROGAMMER'S OTHER NOTES:
-This program was written as a topology final project. There is much room for it to grow. I have purposely left it open so that other students (either graduate / undergraduate researchers or those taking this course) may make modifications. Below are some edits I think would be useful, organized from simplest to most difficult to implement.
-1) Add a function to determine the smallest and largest segement. This would allow the user to label knots with any scheme (e.g. 1-12 instead of 0-11).
-2) Add a function to determine which knot is between the first and last segments and put a flag on it. This would not restrict the user to identifying this crossing in advance.
-3) Allow multiple, intertwined, unconnected loops. (This has not been tested, but may work with current implementation)
-4) Add virtual knot analysis (check to see if the PD notation is valid, output Error message instead of allowing compiler to crash)
-5) Add arc analysis. Determine how to generate Jones Polynomial for this case
-6) Link this program to Mathematica with a script / mexing function to automatically generate the Jones Polynomial summation.
+This program was written as a topology final project. There is much room for it to grow. I have purposely left it open so that other students (either graduate / undergraduate researchers) may make modifications. Below are some edits I think would be useful, organized from simplest to most difficult to implement.
+1) Add a function to determine which knot is between the first and last segments and put a flag on it. This would not restrict the user to identifying this crossing in advance.
+2) Allow multiple, intertwined, unconnected loops. (This has not been tested, but may work with current implementation)
+3) Add virtual knot analysis (check to see if the PD notation is valid, output Error message instead of allowing compiler to crash)
+4) Add arc analysis. Determine how to generate Jones Polynomial for this case
+5) Link this program to Mathematica with a script / mexing function to automatically generate the Jones Polynomial summation.
 
 
 /////////////////////////////////////////////////////
